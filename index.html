@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#09090d">
+<title>GM Studio | Cinematic Experience</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --bg: #09090d;
+  --orange: #ff643c;
+  --orange-light: #ffb08e;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+}
+
+body {
+  overflow: hidden;
+  background: var(--bg);
+  color: white;
+  font-family: "Poppins", sans-serif;
+}
+
+.loader {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--bg);
+  opacity: 1;
+  visibility: visible;
+  transition: opacity .9s ease, visibility .9s ease;
+}
+
+.loader.hide {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* BACKGROUND SLIDES */
+
+.image-stage {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  background: var(--bg);
+}
+
+.hero-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  object-position: center;
+  opacity: 0;
+  clip-path: inset(0 100% 0 0);
+  transform: scale(1.08);
+  filter: brightness(.48) saturate(.85);
+  will-change: clip-path, transform, opacity;
+}
+
+.hero-image.active {
+  opacity: 1;
+  animation:
+    cinematicReveal 1.5s cubic-bezier(.76, 0, .24, 1) both,
+    slowZoom 5s ease-out both;
+}
+
+@keyframes cinematicReveal {
+  from { clip-path: inset(0 100% 0 0); }
+  to   { clip-path: inset(0 0 0 0); }
+}
+
+@keyframes slowZoom {
+  from { transform: scale(1.12); }
+  to   { transform: scale(1); }
+}
+
+.image-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(9,9,13,.58) 0%,
+      rgba(9,9,13,.25) 35%,
+      rgba(9,9,13,.62) 65%,
+      rgba(9,9,13,.98) 100%
+    ),
+    radial-gradient(
+      ellipse at center,
+      transparent 0%,
+      rgba(9,9,13,.48) 100%
+    );
+}
+
+.grain {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  opacity: .07;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.35'/%3E%3C/svg%3E");
+}
+
+/* TOP BRAND */
+
+.topbar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 3;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 30px 5.5%;
+}
+
+.brand {
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -2px;
+}
+
+.brand span {
+  color: var(--orange);
+}
+
+.top-label {
+  color: #e4dfe5;
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 3px;
+}
+
+.top-indicator {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: #d0c9d2;
+  font-size: 9px;
+  letter-spacing: 1px;
+}
+
+.live-dot {
+  flex-shrink: 0;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--orange);
+  box-shadow: 0 0 12px rgba(255,100,60,.8);
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  50% { opacity: .35; }
+}
+
+/* CENTER CONTENT */
+
+.center-content {
+  position: absolute;
+  z-index: 3;
+  top: 46%;
+  left: 50%;
+  width: min(620px, 90%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  transform: translate(-50%, -50%);
+}
+
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--orange-light);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 4px;
+}
+
+.eyebrow::before,
+.eyebrow::after {
+  content: "";
+  width: 25px;
+  height: 1px;
+  background: var(--orange);
+}
+
+.headline {
+  margin-top: 20px;
+  font-size: clamp(34px, 5.5vw, 66px);
+  line-height: 1.12;
+  font-weight: 500;
+  letter-spacing: -2.8px;
+}
+
+.headline span {
+  color: var(--orange);
+}
+
+.subtitle {
+  margin-top: 15px;
+  color: #d0c7d2;
+  font-size: 11px;
+  line-height: 1.8;
+  letter-spacing: .8px;
+}
+
+/* PROGRESS BAR */
+
+.loading-info {
+  width: min(350px, 100%);
+  margin-top: 34px;
+}
+
+.loading-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  margin-bottom: 12px;
+}
+
+.loading-label {
+  color: #e0d9e2;
+  font-size: 9px;
+  letter-spacing: 2px;
+}
+
+.percentage {
+  color: var(--orange-light);
+  font-size: 19px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.progress-track {
+  width: 100%;
+  height: 3px;
+  overflow: hidden;
+  border-radius: 10px;
+  background: rgba(255,255,255,.18);
+}
+
+.progress-bar {
+  width: 0%;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--orange), var(--orange-light));
+  box-shadow: 0 0 18px rgba(255,100,60,.65);
+  transition: width .18s linear;
+}
+
+.status {
+  min-height: 16px;
+  margin-top: 13px;
+  color: #c3b9c7;
+  font-size: 9px;
+  letter-spacing: 1px;
+}
+
+/* SEVEN THUMBNAILS */
+
+.slide-preview {
+  position: absolute;
+  z-index: 3;
+  bottom: 91px;
+  left: 50%;
+  width: min(460px, 82%);
+  transform: translateX(-50%);
+}
+
+.preview-label {
+  margin-bottom: 12px;
+  color: #d1c9d3;
+  text-align: center;
+  font-size: 8px;
+  letter-spacing: 3px;
+}
+
+.thumbnails {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  align-items: center;
+  gap: 9px;
+}
+
+.thumbnail {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,.18);
+  border-radius: 3px;
+  background: #211c25;
+  opacity: .45;
+  transform: scale(.94);
+  transition:
+    opacity .35s ease,
+    transform .35s ease,
+    border-color .35s ease,
+    box-shadow .35s ease;
+}
+
+.thumbnail img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.thumbnail.active {
+  opacity: 1;
+  border-color: var(--orange);
+  transform: translateY(-7px) scale(1.05);
+  box-shadow: 0 8px 24px rgba(255,100,60,.22);
+}
+
+.thumbnail.active::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 3px;
+  background: var(--orange);
+}
+
+/* FOOTER */
+
+.footer {
+  position: absolute;
+  z-index: 3;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  min-height: 55px;
+  padding: 17px 5.5%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  border-top: 1px solid rgba(255,255,255,.09);
+  background: rgba(9,9,13,.55);
+}
+
+.copyright {
+  color: #aaa2af;
+  font-size: 9px;
+  letter-spacing: .5px;
+}
+
+.copyright span {
+  color: #fff;
+}
+
+.footer-right {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: #bcb4c0;
+  font-size: 8px;
+  letter-spacing: 2px;
+}
+
+.footer-line {
+  width: 25px;
+  height: 1px;
+  background: var(--orange);
+}
+
+/* TABLETS */
+
+@media (max-width: 768px) {
+  .topbar {
+    padding: 24px 5%;
+  }
+
+  .top-label {
+    display: none;
+  }
+
+  .top-indicator {
+    font-size: 8px;
+  }
+
+  .center-content {
+    top: 43%;
+    width: 92%;
+  }
+
+  .headline {
+    font-size: clamp(34px, 7vw, 48px);
+    letter-spacing: -1.5px;
+  }
+
+  .subtitle {
+    max-width: 300px;
+  }
+
+  .slide-preview {
+    bottom: 82px;
+    width: 88%;
+  }
+
+  .thumbnails {
+    gap: 5px;
+  }
+
+  .footer {
+    padding: 14px 5%;
+  }
+}
+
+/* SMALL MOBILE */
+
+@media (max-width: 480px) {
+  .topbar {
+    padding: 23px 5%;
+  }
+
+  .brand {
+    font-size: 24px;
+  }
+
+  .top-indicator {
+    max-width: 170px;
+    font-size: 7px;
+    letter-spacing: .5px;
+  }
+
+  .center-content {
+    top: 41%;
+    width: 92%;
+  }
+
+  .eyebrow {
+    font-size: 8px;
+    letter-spacing: 2px;
+  }
+
+  .headline {
+    margin-top: 15px;
+    font-size: clamp(30px, 8.8vw, 40px);
+    letter-spacing: -1.5px;
+  }
+
+  .subtitle {
+    width: 82%;
+    max-width: 250px;
+    margin-left: auto;
+    margin-right: auto;
+    font-size: 9px;
+    line-height: 1.7;
+  }
+
+  .loading-info {
+    width: 82%;
+    max-width: 250px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .slide-preview {
+    bottom: 76px;
+    width: 91%;
+  }
+
+  .preview-label {
+    margin-bottom: 9px;
+    font-size: 7px;
+    letter-spacing: 2px;
+  }
+
+  .thumbnails {
+    gap: 4px;
+  }
+
+  .thumbnail.active {
+    transform: translateY(-4px) scale(1.03);
+  }
+
+  .footer {
+    min-height: 40px;
+    padding: 12px 5%;
+  }
+
+  .copyright {
+    font-size: 8px;
+  }
+
+  .footer-right {
+    display: none;
+  }
+}
+
+/* LANDSCAPE PHONES */
+
+@media (max-height: 500px) and (orientation: landscape) {
+  .topbar {
+    padding: 12px 4%;
+  }
+
+  .brand {
+    font-size: 22px;
+  }
+
+  .center-content {
+    top: 45%;
+    transform: translate(-50%, -50%) scale(.72);
+  }
+
+  .headline {
+    margin-top: 7px;
+    font-size: 32px;
+  }
+
+  .subtitle {
+    margin-top: 5px;
+  }
+
+  .loading-info {
+    margin-top: 10px;
+  }
+
+  .slide-preview {
+    width: min(290px, 38%);
+    bottom: 43px;
+  }
+
+  .preview-label {
+    margin-bottom: 5px;
+    font-size: 7px;
+  }
+
+  .thumbnails {
+    gap: 4px;
+  }
+
+  .thumbnail {
+    aspect-ratio: 4 / 3;
+  }
+
+  .thumbnail.active {
+    transform: translateY(-3px) scale(1.02);
+  }
+
+  .footer {
+    min-height: 30px;
+    padding: 7px 4%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-image.active,
+  .live-dot {
+    animation: none;
+  }
+
+  .loader,
+  .progress-bar,
+  .thumbnail {
+    transition-duration: .1s;
+  }
+}
+</style>
+</head>
+
+<body>
+<main class="loader" id="loader">
+
+  <div class="image-stage" aria-hidden="true">
+    <img class="hero-image" id="heroA" alt="">
+    <img class="hero-image" id="heroB" alt="">
+  </div>
+
+  <div class="image-overlay"></div>
+  <div class="grain"></div>
+
+  <header class="topbar">
+    <div class="brand">GM<span>.</span></div>
+    <div class="top-label">CREATIVE STUDIO</div>
+
+    <div class="top-indicator">
+      <span class="live-dot"></span>
+      <span>PREPARING YOUR EXPERIENCE</span>
+    </div>
+  </header>
+
+  <section class="center-content">
+    <div class="eyebrow">GM CREATIVE STUDIO</div>
+
+    <h1 class="headline">
+      Art in <span>motion.</span>
+    </h1>
+
+    <p class="subtitle">
+      Every frame tells a story. Get ready to experience it.
+    </p>
+
+    <div class="loading-info">
+      <div class="loading-row">
+        <span class="loading-label" id="loadingLabel">
+          LOADING EXPERIENCE
+        </span>
+        <span class="percentage" id="percentage">0%</span>
+      </div>
+
+      <div
+        class="progress-track"
+        id="progressTrack"
+        role="progressbar"
+        aria-label="Loading progress"
+        aria-valuemin="0"
+        aria-valuemax="100"
+        aria-valuenow="0"
+      >
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+
+      <p class="status" id="status" aria-live="polite">
+        Initializing experience...
+      </p>
+    </div>
+  </section>
+
+  <section class="slide-preview" aria-label="Slide preview">
+    <p class="preview-label">A GLIMPSE OF THE EXPERIENCE</p>
+    <div class="thumbnails" id="thumbnails"></div>
+  </section>
+
+  <footer class="footer">
+    <p class="copyright">
+      © 2026 <span>GM Studio.</span> All rights reserved.
+    </p>
+
+    <div class="footer-right">
+      <span class="footer-line"></span>
+      <span>DESIGNED TO INSPIRE</span>
+    </div>
+  </footer>
+
+</main>
+
+<script>
+(() => {
+  "use strict";
+
+  /* EDIT THESE PATHS IF YOUR IMAGE FOLDER IS DIFFERENT */
+  const IMAGE_PATHS = [
+    "./img/img1.jpg",
+    "./img/img2.jpg",
+    "./img/img3.jpg",
+    "./img/img4.jpg",
+    "./img/img5.jpg",
+    "./img/img6.jpg",
+    "./img/img7.jpg"
+  ];
+
+  const MIN_LOADING_TIME = 8000;
+  const MAX_LOADING_TIME = 15000;
+  const SLIDE_INTERVAL = 2200;
+  const REVEAL_DURATION = 1500;
+  const FINAL_HOLD = 1000;
+  const FADE_DURATION = 900;
+
+  const loader = document.getElementById("loader");
+  const percentageElement = document.getElementById("percentage");
+  const progressBar = document.getElementById("progressBar");
+  const progressTrack = document.getElementById("progressTrack");
+  const status = document.getElementById("status");
+  const loadingLabel = document.getElementById("loadingLabel");
+  const thumbnails = document.getElementById("thumbnails");
+
+  const heroA = document.getElementById("heroA");
+  const heroB = document.getElementById("heroB");
+
+  const startedAt = Date.now();
+
+  let progress = 0;
+  let activeIndex = -1;
+  let activeHero = null;
+  let availableSlides = [];
+
+  let imagesReady = false;
+  let minimumTimePassed = false;
+  let finished = false;
+  let redirectStarted = false;
+
+  let progressTimer = null;
+  let slideTimer = null;
+  let fallbackTimer = null;
+  let finishTimer = null;
+
+  let slideSwitching = false;
+  let queuedIndex = null;
+  let slideGeneration = 0;
+
+  function updateProgress(value, message) {
+    progress = Math.max(
+      progress,
+      Math.min(100, Math.floor(value))
+    );
+
+    percentageElement.textContent = `${progress}%`;
+    progressBar.style.width = `${progress}%`;
+    progressTrack.setAttribute("aria-valuenow", progress);
+
+    if (message) status.textContent = message;
+  }
+
+  function loadImage(path, index) {
+    return new Promise(resolve => {
+      const image = new Image();
+      let settled = false;
+
+      function complete(success) {
+        if (settled) return;
+        settled = true;
+
+        resolve({
+          path,
+          index,
+          success
+        });
+      }
+
+      image.onload = () => complete(true);
+      image.onerror = () => complete(false);
+      image.src = path;
+
+      if (image.complete) {
+        complete(image.naturalWidth > 0);
+      }
+    });
+  }
+
+  function buildThumbnails() {
+    thumbnails.replaceChildren();
+
+    availableSlides.forEach((slide, index) => {
+      const item = document.createElement("div");
+      item.className = "thumbnail";
+      item.setAttribute("aria-label", `Slide ${slide.index + 1}`);
+
+      const img = document.createElement("img");
+      img.src = slide.path;
+      img.alt = "";
+      img.loading = "eager";
+
+      item.appendChild(img);
+      thumbnails.appendChild(item);
+    });
+  }
+
+  function showSlide(index) {
+    if (
+      redirectStarted ||
+      !availableSlides.length ||
+      index < 0 ||
+      index >= availableSlides.length
+    ) return;
+
+    // Avoid overlapping reveal animations.
+    if (slideSwitching) {
+      queuedIndex = index;
+      return;
+    }
+
+    if (index === activeIndex && activeHero) return;
+
+    slideSwitching = true;
+    queuedIndex = null;
+
+    const generation = ++slideGeneration;
+    const slide = availableSlides[index];
+
+    const nextHero = activeHero === heroA ? heroB : heroA;
+    const previousHero = activeHero;
+
+    nextHero.onload = null;
+    nextHero.onerror = null;
+    nextHero.classList.remove("active");
+    nextHero.style.opacity = "0";
+    nextHero.style.clipPath = "inset(0 100% 0 0)";
+    nextHero.src = slide.path;
+
+    function reveal() {
+      if (generation !== slideGeneration || redirectStarted) return;
+
+      activeIndex = index;
+
+      // Force a clean animation restart.
+      void nextHero.offsetWidth;
+
+      nextHero.classList.add("active");
+      nextHero.style.opacity = "1";
+      nextHero.style.clipPath = "";
+
+      if (previousHero) {
+        previousHero.classList.remove("active");
+        previousHero.style.opacity = "0";
+      }
+
+      activeHero = nextHero;
+
+      Array.from(thumbnails.children).forEach((item, i) => {
+        item.classList.toggle("active", i === index);
+      });
+
+      setTimeout(() => {
+        if (generation !== slideGeneration) return;
+
+        slideSwitching = false;
+
+        if (queuedIndex !== null) {
+          const nextIndex = queuedIndex;
+          queuedIndex = null;
+          showSlide(nextIndex);
+        }
+      }, REVEAL_DURATION);
+    }
+
+    if (nextHero.complete && nextHero.naturalWidth > 0) {
+      reveal();
+    } else {
+      nextHero.onload = reveal;
+
+      nextHero.onerror = () => {
+        if (generation !== slideGeneration) return;
+
+        slideSwitching = false;
+        console.warn("Slide could not display:", slide.path);
+
+        if (queuedIndex !== null) {
+          const nextIndex = queuedIndex;
+          queuedIndex = null;
+          showSlide(nextIndex);
+        }
+      };
+    }
+  }
+
+  function startSlideshow() {
+    if (!availableSlides.length) return;
+
+    showSlide(0);
+
+    if (availableSlides.length > 1) {
+      slideTimer = setInterval(() => {
+        if (redirectStarted || finished) return;
+
+        const nextIndex =
+          (activeIndex + 1 + availableSlides.length) %
+          availableSlides.length;
+
+        showSlide(nextIndex);
+      }, SLIDE_INTERVAL);
+    }
+  }
+
+  function startProgressAnimation() {
+    progressTimer = setInterval(() => {
+      if (finished || redirectStarted) {
+        clearInterval(progressTimer);
+        return;
+      }
+
+      const elapsed = Date.now() - startedAt;
+      const amount = Math.min(
+        88,
+        elapsed / MIN_LOADING_TIME * 88
+      );
+
+      updateProgress(
+        amount,
+        amount < 25
+          ? "Initializing experience..."
+          : amount < 55
+            ? "Preparing visual elements..."
+            : amount < 80
+              ? "Revealing creative moments..."
+              : "Almost ready..."
+      );
+    }, 100);
+  }
+
+  function tryFinishLoading() {
+    if (
+      finished ||
+      redirectStarted ||
+      !imagesReady ||
+      !minimumTimePassed
+    ) return;
+
+    finished = true;
+
+    clearInterval(progressTimer);
+    clearInterval(slideTimer);
+    clearTimeout(fallbackTimer);
+
+    loadingLabel.textContent = "EXPERIENCE READY";
+
+    let amount = 95;
+    updateProgress(amount, "Finalizing your experience...");
+
+    finishTimer = setInterval(() => {
+      amount += 1;
+
+      updateProgress(
+        amount,
+        amount >= 100
+          ? "Loading complete. Opening studio..."
+          : "Almost ready..."
+      );
+
+      if (amount >= 100) {
+        clearInterval(finishTimer);
+        redirectToSlider();
+      }
+    }, 120);
+  }
+
+  function redirectToSlider() {
+    if (redirectStarted) return;
+
+    redirectStarted = true;
+
+    clearInterval(progressTimer);
+    clearInterval(slideTimer);
+    clearTimeout(fallbackTimer);
+    clearInterval(finishTimer);
+
+    updateProgress(100, "Welcome to GM Studio.");
+
+    setTimeout(() => {
+      loader.classList.add("hide");
+
+      setTimeout(() => {
+        window.location.replace("home.html");
+      }, FADE_DURATION);
+    }, FINAL_HOLD);
+  }
+
+  async function startLoading() {
+    startProgressAnimation();
+
+    setTimeout(() => {
+      minimumTimePassed = true;
+      tryFinishLoading();
+    }, MIN_LOADING_TIME);
+
+    fallbackTimer = setTimeout(() => {
+      if (redirectStarted || finished) return;
+
+      if (!availableSlides.length) {
+        clearInterval(progressTimer);
+        status.textContent =
+          "Images not found. Check the image paths.";
+        console.error("No slide images could be loaded.");
+        return;
+      }
+
+      imagesReady = true;
+      minimumTimePassed = true;
+      tryFinishLoading();
+    }, MAX_LOADING_TIME);
+
+    const results = await Promise.all(
+      IMAGE_PATHS.map((path, index) => loadImage(path, index))
+    );
+
+    if (redirectStarted) return;
+
+    availableSlides = results
+      .filter(result => result.success)
+      .sort((a, b) => a.index - b.index);
+
+    if (!availableSlides.length) {
+      clearInterval(progressTimer);
+      clearTimeout(fallbackTimer);
+
+      status.textContent =
+        "Unable to load images. Check project-1/img/";
+
+      console.error("All slide images failed to load.");
+      return;
+    }
+
+    if (availableSlides.length !== IMAGE_PATHS.length) {
+      console.warn(
+        "Some slide images could not load.",
+        results.filter(result => !result.success).map(result => result.path)
+      );
+    }
+
+    buildThumbnails();
+    startSlideshow();
+
+    imagesReady = true;
+    tryFinishLoading();
+  }
+
+  startLoading();
+})();
+</script>
+</body>
+</html>
